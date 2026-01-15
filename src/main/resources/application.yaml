@@ -1,0 +1,91 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: filmsmicroservice
+
+  datasource:
+    # Cadena de conexion a la bbdd.
+    # Al poner el valor entre ${key:value} priorizamos la variable de entorno de nombre key. Si no la encuentra, toma el valor value.
+    url: jdbc:mysql://localhost:3306/filmsmicroservice
+    username: root
+    password: root
+
+  jpa:
+    hibernate:
+      # Data Definition Language, indica como Hibernate debe manejar el esquema de la base de datos al iniciar la app.
+      # Recomendado: Validate.
+      ddl-auto: none
+
+    properties:
+      hibernate:
+        # Indica el dialecto de la base de datos optimizado para MySQL para consultas eficientes.
+        dialect: org.hibernate.dialect.MySQLDialect
+
+    # Mostrar en la consola las consultas SQL (false no las muestra, true las muestra).
+    show-sql: true
+
+logging:
+  level:
+    # Nivel de log para el logger raíz (root), afectando a Spring y librerías externas.
+    # Solo se mostrarán mensajes de nivel INFO o superior para estos paquetes.
+    root: INFO
+    # Nivel de log específico para el paquete de tu aplicación (com.vedruna.watchlist).
+    # Se mostrarán todos los mensajes de nivel TRACE o superior, ideal para desarrollo y depuración.
+    com:
+      vedruna:
+        watchlist: TRACE
+    # Nivel de log específico para las sentencias SQL generadas por Hibernate (debe estar show-sql: true).
+    # Se mostrarán todos los mensajes de nivel TRACE o superior, ideal para desarrollo y depuración.
+    org:
+      hibernate:
+        SQL: DEBUG
+
+  file:
+    # Nombre y ruta del archivo de log donde se escribirán los mensajes.
+    # Este archivo se creará en el directorio de ejecución de la aplicación.
+    name: logs/app.log
+
+  pattern:
+    # Define el patrón de formato para los logs que se muestran en la consola.
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{36} - %msg%n"
+    # Define el patrón de formato para los logs que se escriben en el archivo (logs/app.log).
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+springdoc:
+  # Asegura que el JSON de la especificación esté bien ordenado.
+  writer-with-order-by-keys: true
+
+management:
+  endpoints:
+    web:
+      # Configura qué endpoints de Actuator se exponen a través de la web (HTTP).
+      exposure:
+        # "*" (todo): Expone todos los endpoints disponibles, como /actuator/health, /actuator/info, /actuator/metrics, etc.
+        include: "*"
+  endpoint:
+    # Configura el detalle de la información mostrada por el endpoint /actuator/health.
+    health:
+      # "always" (siempre): Muestra los detalles de los componentes de salud a todos los usuarios.
+      show-details: always
+  metrics:
+    distribution:
+      # Habilita la generación de percentiles de histograma para las métricas
+      # de las solicitudes del servidor HTTP (http.server.requests).
+      # Esto es útil para calcular latencias más precisas.
+      percentiles-histogram:
+        http:
+          server:
+            requests: true
+
+themoviedb:
+  api:
+    key: eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjNzZkYTA1M2IzZDE3NGQ4NjAxMDQyZTY4ZmY2ZjdiNyIsIm5iZiI6MTc0MDU3NDM4OC45ODMsInN1YiI6IjY3YmYwZWI0ZGQwYWRlYzE0ZDU2MjQzZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.25978z4Vk-hbRlfPW1smt7li497RG1Qx52nUTONrEqU
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
